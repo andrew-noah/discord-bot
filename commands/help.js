@@ -7,7 +7,7 @@ const { Client, Message } = require('discord.js');
  * @param {String[]} args 
  */
 exports.run = (client, msg, args) => {
-    msg.channel.send('No, but modular and not cached suck it nerd.');
+    msg.channel.send('No.');
 }
 
 exports.name = 'help';

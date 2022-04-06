@@ -7,20 +7,19 @@ const {
     createAudioResource,
 } = require('@discordjs/voice');
 
+// Initialize the music queue. 
+// Yes, globals bad blah blah blah
 var queue = [];
-
 exports.queue = queue;
 
 const ytdl = require('ytdl-core');
 
 play = (connection, song, channel) => {
-    // The audio stream is the 'object' that we'll be playing    
     const stream = ytdl(song.url, {filter: 'audioonly' });
 
-    // This only works for streaming for some reason
+    //TODO: Figure out how to make streaming work side by side
     //const stream = ytdl(song.url, {highWaterMark: 1<<25, quality: [91,92,93,94,95], liveBuffer: 4900});
 
-    // The actual entity that gets played through the discord bot (a physical file or a stream)
     const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary });
     const player = createAudioPlayer();
 
@@ -31,6 +30,7 @@ play = (connection, song, channel) => {
     // and grab a thumbnail for the embeded portion
     let ytCode = song.url.split('v=').pop();
 
+    // Create an embedded message showing information about the video
     const embed = new MessageEmbed()
         .setTitle(`Now Playing: ${song.title}`)
         .setDescription(`${song.author.name} - ${song.timestamp}`)
@@ -39,8 +39,8 @@ play = (connection, song, channel) => {
 
     channel.send({ embeds: [embed] });
 
+    // Figure out what to do next when the current video ends
     player.on(AudioPlayerStatus.Idle, () => {
-        console.log('detect idle');
         queue.shift();
         if(!queue.length) connection.destroy();
         else play(connection, queue[0], channel);

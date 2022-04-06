@@ -27,6 +27,7 @@ async function run(client, msg, args) {
         return;
     }
 
+    //TODO: Clean this chunk of code up, it bothers me
     const search = msg.content.slice(args[0].length + client.config.prefix.length).trim();
 
     const searchResults = await ytSearch(search);
@@ -37,17 +38,18 @@ async function run(client, msg, args) {
     }
     const song = searchResults.videos[0];
 
-    // Check if the queue is empty if yes then play immediately
+    // Check if the queue is empty, if yes then play immediately
     if(!music.queue.length) {
         music.queue.push(song);
         
-        // Create a connection in line with the documentation
+        // Create a connection, pulled from the documentation
         const connection = joinVoiceChannel({
             channelId: msg.member.voice.channel.id,
             guildId: guild.id,
             adapterCreator: guild.voiceAdapterCreator,
         });
 
+        // Call the music player
         music.play(connection, music.queue[0], msg.channel);
     }
     // If no then just add to the queue
