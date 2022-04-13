@@ -12,10 +12,10 @@ const {
 var queue = [];
 exports.queue = queue;
 
-const ytdl = require('ytdl-core');
+const ytPlay = require('play-dl');
 
-play = (connection, song, channel) => {
-    const stream = ytdl(song.url, {filter: 'audioonly' });
+play = async (connection, song, channel) => {
+    const { stream } = await ytPlay.stream(song.url, { discordPlayerCompatibility: true });
 
     //TODO: Figure out how to make streaming work side by side
     //const stream = ytdl(song.url, {highWaterMark: 1<<25, quality: [91,92,93,94,95], liveBuffer: 4900});
