@@ -1,5 +1,8 @@
 const { MessageEmbed } = require('discord.js');
 
+const ytSearch = require('yt-search');
+
+
 const {
     AudioPlayerStatus,
     StreamType,
@@ -14,7 +17,16 @@ exports.queue = queue;
 
 const ytPlay = require('play-dl');
 
-play = async (connection, song, channel) => {
+play = async (connection, search, channel) => {
+
+    const searchResults = await ytSearch(search);
+    if(!searchResults.videos[0]) {
+        msg.channel.send('Couldn\'t find a matching video');
+        play(connection, queue[0], channel);
+    }
+
+    const song = searchResults.videos[0];
+
     const { stream } = await ytPlay.stream(song.url, { discordPlayerCompatibility: true });
 
     //TODO: Figure out how to make streaming work side by side

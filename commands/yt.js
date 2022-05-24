@@ -1,5 +1,4 @@
 const {Client, Message} = require('discord.js');
-const ytSearch = require('yt-search');
 let music = require('../music/play.js');
 
 const { joinVoiceChannel } = require('@discordjs/voice');
@@ -30,17 +29,17 @@ async function run(client, msg, args) {
     //TODO: Clean this chunk of code up, it bothers me
     const search = msg.content.slice(args[0].length + client.config.prefix.length).trim();
 
-    const searchResults = await ytSearch(search);
+    // const searchResults = await ytSearch(search);
 
-    if(!searchResults.videos[0]) {
-        msg.channel.send('Couldn\'t find a matching video');
-        return;
-    }
-    const song = searchResults.videos[0];
+    // if(!searchResults.videos[0]) {
+    //     msg.channel.send('Couldn\'t find a matching video');
+    //     return;
+    // }
+    // const song = searchResults.videos[0];
 
     // Check if the queue is empty, if yes then play immediately
     if(!music.queue.length) {
-        music.queue.push(song);
+        music.queue.push(search);
         
         // Create a connection, pulled from the documentation
         const connection = joinVoiceChannel({
@@ -54,8 +53,8 @@ async function run(client, msg, args) {
     }
     // If no then just add to the queue
     else {
-        music.queue.push(song);
-        msg.channel.send(`Queued: ${song.title}`);
+        music.queue.push(search);
+        msg.channel.send("Song queued!");
     }
 }
 
