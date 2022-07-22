@@ -1,4 +1,4 @@
-const { joinVoiceChannel } = require('@discordjs/voice');
+const { joinVoiceChannel, getVoiceConnection } = require('@discordjs/voice');
 const { Client, Message } = require('discord.js');
 
 /**
@@ -7,8 +7,7 @@ const { Client, Message } = require('discord.js');
  * @param {Message} msg 
  */
  exports.run = (client, msg) => {
-
-    if(client.voiceConnection) {
+    if(getVoiceConnection(msg.guild.id)) {
         msg.channel.send('Voice connection already established.')
         return;
     }
@@ -22,9 +21,7 @@ const { Client, Message } = require('discord.js');
         channelId: msg.member.voice.channel.id,
         guildId: msg.guild.id,
         adapterCreator: msg.guild.voiceAdapterCreator,
-    });
-            
-    client.voiceConnection = connection;
+    }); 
 }
 
 exports.name = 'join';

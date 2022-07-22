@@ -1,16 +1,16 @@
 const { Client, Message } = require('discord.js');
-
+const { getVoiceConnection } = require('@discordjs/voice');
 
 
 /**
  * 
  * @param {Client} client 
  * @param {Message} msg 
- * @param {String[]} args 
  */
- exports.run = (client, msg, args) => {
+ exports.run = (client, msg) => {
+    const connection = getVoiceConnection(msg.guild.id);
 
-    if(client.voiceConnection === undefined) {
+    if(connection === undefined) {
         msg.channel.send('No voice connection established.');
         return;
     }
@@ -18,8 +18,8 @@ const { Client, Message } = require('discord.js');
     const isSameChannel = msg.member.voice.channelId === msg.guild.me.voice.channelId;
 
     if(isSameChannel) {    
-        client.voiceConnection.destroy();
-        client.voiceConnection = undefined;
+        connection.destroy();
+        console.log('Destroyed voice connection');
     } else {
         msg.channel.send('Join the bot\'s channel to tell it to leave.');
     }
