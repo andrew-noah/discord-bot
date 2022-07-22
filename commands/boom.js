@@ -1,7 +1,17 @@
-const { createAudioPlayer, createAudioResource } = require('@discordjs/voice');
 const { Client, Message } = require('discord.js');
+const { play } = require('../music/play.js');
 
-const join = require('./join.js');
+const { createReadStream } = require('fs')
+const { join } = require('path');
+const join_dis = require('./join.js');
+
+const {
+    AudioPlayerStatus,
+    StreamType,
+    createAudioPlayer,
+    createAudioResource,
+    getVoiceConnection,
+} = require('@discordjs/voice');
 
 /**
  * 
@@ -10,17 +20,19 @@ const join = require('./join.js');
  * @param {String[]} args 
  */
  exports.run = (client, msg, args) => {
+    if(getVoiceConnection(msg.guild.id) === undefined) {
+        join_dis.run(client, msg);
+    }
+    const connection = getVoiceConnection(msg.guild.id);
 
-    if(client.voiceConnection === undefined) {
-        join.run(client, msg);
-    } 
+    let boom_sfx = createAudioResource(createReadStream(join(__dirname, '../resources/vine_boom.mp3')), {
+        inlineVolume : false
+     });
     
     const player = createAudioPlayer();
-
-    const boom_sfx = createAudioResource('/home/bot/discord-bot/resources/vine_boom.mp3');
     
     player.play(boom_sfx);
-    client.voiceConnection.subscribe(player);
+    connection.subscribe(player);
 }
 
 exports.name = 'boom';
