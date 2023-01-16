@@ -2,6 +2,15 @@
 const { Client } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice')
 
+const isWeekday = (date) => {
+    return date.getDay() % 6 != 0;
+}
+
+const isSchoolHours = (date) => {
+    const hour = date.getHours();
+    return (hour >= 8 && hour < 15);
+}
+
 var music = require('../music/play.js');
 
 /**
@@ -24,6 +33,15 @@ module.exports = (client, oldState, newState) => {
                 music.queue = [];
                 console.log('Correcting force disconnect');
             }
+        }
+    }
+
+    if(newState.id == client.config.mallardID) {
+        let date = new Date();
+
+        if(isWeekday(date) && isSchoolHours(date)) {
+            newState.disconnect();
+            console.log(`Mallard kicked at ${date}`);
         }
     }
 };
