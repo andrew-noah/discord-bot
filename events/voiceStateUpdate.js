@@ -40,7 +40,7 @@ module.exports = (client, oldState, newState) => {
         let date = new Date();
 
         if(isWeekday(date) && isSchoolHours(date)) {
-            newState.disconnect();
+            newState.member.timeout(10 * 60 * 1000);
             console.log(`Mallard kicked at ${date}`);
         }
     }
