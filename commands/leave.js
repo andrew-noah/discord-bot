@@ -15,7 +15,7 @@ const { getVoiceConnection } = require('@discordjs/voice');
         return;
     }
 
-    const isSameChannel = msg.member.voice.channelId === msg.guild.me.voice.channelId;
+    const isSameChannel = msg.member.voice.channelId === msg.guild.members.me.voice.channelId;
 
     if(isSameChannel) {    
         connection.destroy();
