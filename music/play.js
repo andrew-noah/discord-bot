@@ -1,6 +1,5 @@
 const { Message, MessageEmbed } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
-const ytSearch = require('yt-search');
 
 
 const {
@@ -22,15 +21,18 @@ const ytPlay = require('play-dl');
  */
 play = async (msg, search, channel) => {
 
-    const searchResults = await ytSearch(search);
-    if(!searchResults.videos[0]) {
+    const searchResults = await ytPlay.search(search, {
+        limit: 1
+    });
+
+    if(!searchResults[0]) {
         msg.channel.send('Couldn\'t find a matching video');
         queue.shift();
         if(!queue.length) return;
         play(msg, queue[0], channel);
     }
     else {
-        const song = searchResults.videos[0];
+        const song = searchResults[0];
         const connection = getVoiceConnection(msg.guild.id);
         const { stream } = await ytPlay.stream(song.url, { discordPlayerCompatibility: true });
 
@@ -50,7 +52,7 @@ play = async (msg, search, channel) => {
         // Create an embedded message showing information about the video
         const embed = new MessageEmbed()
             .setTitle(`Now Playing: ${song.title}`)
-            .setDescription(`${song.author.name} - ${song.timestamp}`)
+            .setDescription(`${song.channel.name} - ${song.durationRaw}`)
             .setURL(`${song.url}`)
             .setThumbnail(`https://img.youtube.com/vi/${ytCode}/0.jpg`);
 
