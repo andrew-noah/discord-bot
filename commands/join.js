@@ -22,6 +22,15 @@ const { Client, Message } = require('discord.js');
         guildId: msg.guild.id,
         adapterCreator: msg.guild.voiceAdapterCreator,
     }); 
+
+     const networkStateChangeHandler = (oldNetworkState, newNetworkState) => {
+         const newUdp = Reflect.get(newNetworkState, 'udp');
+         clearInterval(newUdp?.keepAliveInterval);
+     }
+     connection.on('stateChange', (oldState, newState) => {
+         Reflect.get(oldState, 'networking')?.off('stateChange', networkStateChangeHandler);
+         Reflect.get(newState, 'networking')?.on('stateChange', networkStateChangeHandler);
+     });
 }
 
 exports.name = 'join';
