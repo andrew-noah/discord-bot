@@ -18,7 +18,7 @@ exports.run = (client, msg) => {
 
     const player = connection.state.subscription.player;
 
-    player.stop();
+    player.pause();
     music.queue.shift();
 
     if(!music.queue.length) {
