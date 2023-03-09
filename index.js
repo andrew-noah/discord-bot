@@ -18,7 +18,7 @@ for(const file of events) {
     // Require the file itself
     const event = require(`./events/${file}`);
 
-    // Weird black magic that makes the Client class work properly
+    // Bind event names to the client
     client.on(eventName, event.bind(null, client));
 }
 
