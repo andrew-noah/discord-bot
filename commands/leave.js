@@ -1,6 +1,6 @@
 const { Client, Message } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
-
+const music = require('../music/play.js');
 
 /**
  * 
@@ -19,6 +19,7 @@ const { getVoiceConnection } = require('@discordjs/voice');
 
     if(isSameChannel) {    
         connection.destroy();
+        music.queue = [];
         console.log('Destroyed voice connection');
     } else {
         msg.channel.send('Join the bot\'s channel to tell it to leave.');
