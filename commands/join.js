@@ -23,14 +23,18 @@ const { Client, Message } = require('discord.js');
         adapterCreator: msg.guild.voiceAdapterCreator,
     }); 
 
-     const networkStateChangeHandler = (oldNetworkState, newNetworkState) => {
-         const newUdp = Reflect.get(newNetworkState, 'udp');
-         clearInterval(newUdp?.keepAliveInterval);
-     }
-     connection.on('stateChange', (oldState, newState) => {
-         Reflect.get(oldState, 'networking')?.off('stateChange', networkStateChangeHandler);
-         Reflect.get(newState, 'networking')?.on('stateChange', networkStateChangeHandler);
-     });
+    // FIXME: This should be removed once discord fixes a bug on their end
+    // this disables the keep alive timer
+    // https://github.com/discordjs/discord.js/issues/9185#issuecomment-1459083216 
+    const networkStateChangeHandler = (oldNetworkState, newNetworkState) => {
+        const newUdp = Reflect.get(newNetworkState, 'udp');
+        clearInterval(newUdp?.keepAliveInterval);
+    }
+
+    connection.on('stateChange', (oldState, newState) => {
+        Reflect.get(oldState, 'networking')?.off('stateChange', networkStateChangeHandler);
+        Reflect.get(newState, 'networking')?.on('stateChange', networkStateChangeHandler);
+    });
 }
 
 exports.name = 'join';
