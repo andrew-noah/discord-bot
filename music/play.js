@@ -56,6 +56,10 @@ play = async (msg, search, channel) => {
 
         channel.send({ embeds: [embed] });
 
+        player.on('error', error => {
+            console.error(`Error: ${error.message} with resource ${error.resource.metadata.title}`);
+        });
+
         // Figure out what to do next when the current video ends
         player.on(AudioPlayerStatus.Idle, () => {
             queue.shift();
