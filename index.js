@@ -4,7 +4,7 @@ const fs = require('fs');
 
 // Instantiate a Client class, sets permissions the bot will follow
 const client = new Cient({ 
-    intents: [Intents.S.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] 
+    intents: [Intents.SFLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] 
 });
 
 client.config = config;
