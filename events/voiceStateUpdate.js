@@ -24,7 +24,7 @@ module.exports = (client, oldState, newState) => {
 
     // This fixes the case of the bot being disconnected by an admin.
     // It properly destroys the voice connection and clears the music queue
-    if(newState.id == botID) {
+    if(newState.id === botID) {
         if(oldState.channel && !newState.channel) {
             const connection = getVoiceConnection(oldState.guild.id);
 
@@ -36,7 +36,7 @@ module.exports = (client, oldState, newState) => {
         }
     }
 
-    if(newState.id == client.config.mallardID) {
+    if(client.config.schoolKick && newState.id === client.config.mallardID) {
         let date = new Date();
 
         if(isWeekday(date) && isSchoolHours(date)) {
