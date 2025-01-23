@@ -25,7 +25,7 @@ const {
     }
     const connection = getVoiceConnection(msg.guild.id);
 
-    let boom_sfx = createAudioResource(createReadStream(join(__dirname, '../resources/vine_boom.mp3')), {
+    let boom_sfx = createAudioResource(createReadStream(join(__dirname, '../resources/03 Daughter.flac')), {
         inlineVolume : false
      });
     
