@@ -23,5 +23,7 @@ module.exports = (client, msg) => {
 
     if(!cmd) return;
 
+    console.log("Recieved input: ", cmd);
+
     cmd.run(client, msg, args);
 };

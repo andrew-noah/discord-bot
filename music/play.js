@@ -34,7 +34,7 @@ play = async (msg, search, channel) => {
     else {
         const song = searchResults[0];
         const connection = getVoiceConnection(msg.guild.id);
-        const { stream } = await ytPlay.stream(song.url, { discordPlayerCompatibility: true });
+        const { stream } = await ytPlay.stream(song.url);//, { discordPlayerCompatibility: true });
 
         //TODO: Figure out how to make streaming work side by side
         //const stream = ytdl(song.url, {highWaterMark: 1<<25, quality: [91,92,93,94,95], liveBuffer: 4900});
