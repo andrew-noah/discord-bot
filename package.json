@@ -12,9 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/opus": "^0.10.0",
     "@discordjs/voice": "^0.18.0",
-    "discord.js": "^14.17.3",
+    "discord.js": "^14.14.1",
+    "libsodium-wrappers": "^0.7.15",
     "play-dl": "^1.9.7",
-    "typescript": "^5.8.0-dev.20250124"
+    "typescript": "^5.8.0-dev.20250124",
+    "yt-dlp-wrap": "^2.3.12"
   }
 }
