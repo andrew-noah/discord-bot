@@ -1,0 +1,50 @@
+diff --git a/node_modules/yt-dlp-wrap/dist/index.js b/node_modules/yt-dlp-wrap/dist/index.js
+index 916c9e5..334cba3 100644
+--- a/node_modules/yt-dlp-wrap/dist/index.js
++++ b/node_modules/yt-dlp-wrap/dist/index.js
+@@ -198,6 +198,14 @@ var YTDlpWrap = /** @class */ (function () {
+         if (options === void 0) { options = {}; }
+         if (abortSignal === void 0) { abortSignal = null; }
+         var readStream = new stream_1.Readable({ read: function (size) { } });
++        readStream.on('close', () => {
++            console.log('readStream destroyed!');
++            readStream.destroy();
++        });       
++        readStream.on('end', () => {
++            console.log('readStream destroyed!');
++            readStream.destroy();
++        });
+         options = YTDlpWrap.setDefaultOptions(options);
+         ytDlpArguments = ytDlpArguments.concat(['-o', '-']);
+         var ytDlpProcess = (0, child_process_1.spawn)(this.binaryPath, ytDlpArguments, options);
+@@ -205,18 +213,25 @@ var YTDlpWrap = /** @class */ (function () {
+         YTDlpWrap.bindAbortSignal(abortSignal, ytDlpProcess);
+         var stderrData = '';
+         var processError;
+-        ytDlpProcess.stdout.on('data', function (data) { return readStream.push(data); });
++        ytDlpProcess.stdout.on('data', function (data) { 
++            return readStream.push(data); 
++        });
+         ytDlpProcess.stderr.on('data', function (data) {
+             var stringData = data.toString();
+             YTDlpWrap.emitYoutubeDlEvents(stringData, readStream);
+             stderrData += stringData;
+         });
+-        ytDlpProcess.on('error', function (error) { return (processError = error); });
++        ytDlpProcess.on('error', function (error) { 
++            return (processError = error); 
++        });
+         ytDlpProcess.on('close', function (code) {
+             if (code === 0 || ytDlpProcess.killed) {
+-                readStream.emit('close');
+-                readStream.destroy();
+-                readStream.emit('end');
++                // https://github.com/foxesdocode/yt-dlp-wrap/pull/13/commits/28201db7559d700c6d1fc5fa1a2f4f049b755d01
++                // I have no idea why the library is designed like this but I need this stream
++                //readStream.emit('close');
++                //readStream.destroy();
++                //readStream.emit('end');
++                readStream.push(null);
+             }
+             else {
+                 var error = YTDlpWrap.createError(code, processError, stderrData);
