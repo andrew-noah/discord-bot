@@ -31,7 +31,7 @@ export class CustomClient extends Client
         super({intents: intents});
 
         this.config = {
-            token: configFile.test,
+            token: configFile.token,
             prefix: configFile.prefix
         };
 

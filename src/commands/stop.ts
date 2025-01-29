@@ -1,48 +1,8 @@
-import { CustomCommand, CustomClient } from '../types'
-import { Message, TextChannel, VoiceChannel} from 'discord.js'
-import { createAudioResource, joinVoiceChannel, createAudioPlayer, AudioPlayerStatus, AudioResource, getVoiceConnection, VoiceConnection, NoSubscriberBehavior, StreamType, PlayerSubscription } from '@discordjs/voice'
-import YTDlWrap, { YTDlpReadable } from 'yt-dlp-wrap'
+import { CustomClient } from '../types'
+import { ConnectionService, Message, TextChannel } from 'discord.js'
+import { getVoiceConnection, VoiceConnectionReadyState } from '@discordjs/voice'
 
-const ytDl = new YTDlWrap('/sbin/yt-dlp'); 
-
-let initVoiceConnection = (message: Message): VoiceConnection | undefined => {
-    const channel = message.member?.voice.channel; 
-
-    if(!channel) { 
-        console.error(`User voice channel invalid!`);
-        return undefined;
-    } else if(!message.guildId) {
-        console.error(`guildId is invalid!`);
-        return undefined;
-    }
-
-    // Check for existing voice connection
-    let connection = getVoiceConnection(message.guildId);
-
-    // If that doesn't exist make one
-    if(!connection) {
-        connection = joinVoiceChannel({
-            channelId: channel.id,
-            guildId: message.guildId,
-            adapterCreator: channel.guild.voiceAdapterCreator,
-        });
-
-        if(!connection) {
-            console.error(`Failed to create voice connection!`);
-            return undefined;
-        }
-    }
-
-    return connection;
-};
-
-let searchYoutube = (args: string[]) => {
-    const search: string = args.slice(1, args.length).join(' ');
-
-    let stream = ytDl.execStream([args[1], '-f', 'best[ext=mp4]']); 
-
-    return stream;
-};
+import { queue } from '../music'
 
 module.exports = {
     name: 'stop',
@@ -57,8 +17,11 @@ module.exports = {
             const channel = message.channel as TextChannel;
             channel.send(`Not connected to voice!`);
             return;
+        } else {
+            (connection.state as VoiceConnectionReadyState).subscription?.player.stop();
         }
 
-        connection.destroy();
+        console.log('Music queue cleared!');
+        queue.length = 0;
     }
 }
