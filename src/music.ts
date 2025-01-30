@@ -3,7 +3,7 @@ import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, createAudioResource,
 import { TextChannel } from "discord.js";
 import { Message } from 'discord.js'
 
-const ytDl = new YTDlpWrap('/sbin/yt-dlp'); 
+const ytDl = new YTDlpWrap(`${process.cwd()}/yt-dlp`); 
 
 export let queue: string[]  = [];
 
