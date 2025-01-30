@@ -1,5 +1,5 @@
 import YTDlpWrap, { YTDlpReadable } from "yt-dlp-wrap";
-import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel, NoSubscriberBehavior, PlayerSubscription, VoiceConnection } from "@discordjs/voice";
+import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel, NoSubscriberBehavior, VoiceConnection } from "@discordjs/voice";
 import { TextChannel } from "discord.js";
 import { Message } from 'discord.js'
 

@@ -1,7 +1,6 @@
 import { CustomClient } from '../types'
-import { ConnectionService, Message, TextChannel } from 'discord.js'
-import { AudioPlayer, getVoiceConnection, VoiceConnectionReadyState, VoiceConnectionStatus } from '@discordjs/voice'
-import { getNextSong, loadSong , queue } from '../music'
+import { Message, TextChannel } from 'discord.js'
+import { getVoiceConnection, VoiceConnectionReadyState } from '@discordjs/voice'
 
 module.exports = {
     name: 'skip',

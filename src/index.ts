@@ -1,4 +1,4 @@
-import { Client, ClientOptions, Collection, Events, GatewayIntentBits } from "discord.js";
+import { GatewayIntentBits } from "discord.js";
 import { CustomEvent, CustomClient, CustomCommand } from "./types";
 import fs from "fs"
 

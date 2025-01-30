@@ -1,5 +1,5 @@
 import { CustomClient } from '../types'
-import { ConnectionService, Message, TextChannel } from 'discord.js'
+import { Message, TextChannel } from 'discord.js'
 import { getVoiceConnection, VoiceConnectionReadyState } from '@discordjs/voice'
 
 import { queue } from '../music'

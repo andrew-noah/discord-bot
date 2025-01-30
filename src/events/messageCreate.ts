@@ -1,5 +1,5 @@
 import { Message, Events } from "discord.js"
-import { CustomEvent, CustomClient } from "../types";
+import { CustomClient } from "../types";
 
 module.exports = {
     name: Events.MessageCreate,
