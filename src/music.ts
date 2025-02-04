@@ -1,11 +1,20 @@
 import YTDlpWrap, { YTDlpReadable } from "yt-dlp-wrap";
 import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel, NoSubscriberBehavior, VoiceConnection } from "@discordjs/voice";
-import { TextChannel } from "discord.js";
-import { Message } from 'discord.js'
+import { EmbedBuilder, TextChannel, Message } from "discord.js";
 
 const ytDl = new YTDlpWrap(`${process.cwd()}/yt-dlp`); 
 
-export let queue: string[]  = [];
+type MusicQueueItem = [string, TextChannel];
+type MusicQueue = MusicQueueItem[];
+export let queue: MusicQueue = []; 
+
+let getSongName = (queue: MusicQueueItem): string => {
+    return queue[0];
+};
+
+let getChannel = (queue: MusicQueueItem): TextChannel => {
+    return queue[1];
+};
 
 let initVoiceConnection = (message: Message): VoiceConnection | undefined => {
     const channel = message.member?.voice.channel; 
@@ -70,11 +79,12 @@ let initAudioPlayer = (connection: VoiceConnection): AudioPlayer | undefined => 
     return player;
 }
 
+let findVideoInfo = async (search: string): Promise<any> => {
+    return ytDl.getVideoInfo(['--default-search', 'ytsearch', search]);
+};
+
 let searchYoutube = async (search: string): Promise<YTDlpReadable> => {
-
-    let stream = ytDl.execStream(['--default-search', 'ytsearch', search, '-x', '--audio-format', 'mp3']); 
-
-    return stream;
+    return ytDl.execStream(['--default-search', 'ytsearch', search, '-x', '--audio-format', 'mp3']); 
 };
 
 export let getNextSong = async(player: AudioPlayer, connection: VoiceConnection) => {
@@ -91,10 +101,19 @@ export let getNextSong = async(player: AudioPlayer, connection: VoiceConnection)
     }   
 };
 
-export let loadSong = async (song: string, player: AudioPlayer, connection: VoiceConnection) => {
-    let resource = createAudioResource(await searchYoutube(song));
+export let loadSong = async (song: MusicQueueItem, player: AudioPlayer, connection: VoiceConnection) => {
+    let stream = searchYoutube(getSongName(song));
+    let songInfo = await findVideoInfo(getSongName(song));
 
-    player.play(resource);
+    const embed = new EmbedBuilder()
+        .setTitle(`Now Playing: ${songInfo.title}`)
+        .setDescription(`${songInfo.channel} - ${songInfo.duration_string}`)
+        .setURL(`${songInfo.original_url}`)
+        .setThumbnail(`${songInfo.thumbnail}`);
+
+    getChannel(song).send({ embeds: [embed] });
+
+    player.play(createAudioResource(await stream));
 }
 
 export let startPlayer = async (message: Message) => {
