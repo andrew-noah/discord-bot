@@ -1,8 +1,8 @@
 import { CustomClient } from '../types'
-import { Message, TextChannel }  from 'discord.js'
+import { Message, TextChannel, VoiceState }  from 'discord.js'
 
-import { queue, startPlayer } from '../music'
-import { getVoiceConnection } from '@discordjs/voice';
+import { getNextSong, loadSong, queue, startPlayer } from '../music'
+import { AudioPlayerStatus, getVoiceConnection, VoiceConnectionReadyState } from '@discordjs/voice';
 
 
 module.exports = {
@@ -15,8 +15,16 @@ module.exports = {
 
         (message.channel as TextChannel).send("Song queued!");
 
-        if(!getVoiceConnection(message.guildId)) {
+        let connection = getVoiceConnection(message.guildId);
+
+        if(!connection) {
             startPlayer(message);
+        } else {
+            let player = (connection.state as VoiceConnectionReadyState).subscription!.player;
+            if(player.state.status === AudioPlayerStatus.Idle) {
+                console.log(`Song recieved during timeout period`)
+                    getNextSong(player, connection); 
+            }
         }
     }
 };

@@ -4,6 +4,8 @@ import { EmbedBuilder, TextChannel, Message } from "discord.js";
 
 const ytDl = new YTDlpWrap(`${process.cwd()}/yt-dlp`); 
 
+let timeoutID: NodeJS.Timeout | undefined; 
+
 type MusicQueueItem = [string, TextChannel];
 type MusicQueue = MusicQueueItem[];
 export let queue: MusicQueue = []; 
@@ -91,17 +93,24 @@ export let getNextSong = async(player: AudioPlayer, connection: VoiceConnection)
     queue.shift();
     if(queue.length === 0) {
         // I don't like this and I want it gone, but for now I need it to prevent crashes
-        try {
-            connection.destroy();
-        } catch {
-            console.log('caught duplicate connection destruction'); 
-        }
+        
+        timeoutID = setTimeout(() => {
+            try {
+                connection.destroy();
+            } catch {
+                console.log('caught duplicate connection destruction'); 
+            }
+        }, 20 * 1000);
     } else {
-        loadSong(queue[0], player, connection);
-    }   
+        loadSong(queue[0], player);
+    }
 };
 
-export let loadSong = async (song: MusicQueueItem, player: AudioPlayer, connection: VoiceConnection) => {
+export let loadSong = async (song: MusicQueueItem, player: AudioPlayer) => {
+    console.log(`Loading new song`);
+    clearTimeout(timeoutID);
+    timeoutID = undefined;
+
     let stream = searchYoutube(getSongName(song));
     let songInfo = await findVideoInfo(getSongName(song));
 
@@ -134,5 +143,5 @@ export let startPlayer = async (message: Message) => {
     }
     connection.subscribe(player);
 
-    loadSong(queue[0], player, connection);
+    loadSong(queue[0], player);
 };
