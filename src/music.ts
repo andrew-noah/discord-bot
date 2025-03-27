@@ -84,7 +84,7 @@ let findVideoInfo = async (search: string): Promise<any> => {
 };
 
 let searchYoutube = async (search: string): Promise<YTDlpReadable> => {
-    return ytDl.execStream(['--default-search', 'ytsearch', search, '-x', '--audio-format', 'mp3']); 
+    return ytDl.execStream(['--default-search', 'ytsearch', '-x', '--audio-format', 'mp3', search]); 
 };
 
 export let getNextSong = async(player: AudioPlayer, connection: VoiceConnection) => {
